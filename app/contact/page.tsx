@@ -10,6 +10,28 @@ export default function ContactPage() {
   const [subject, setSubject]   = useState('')
   const [message, setMessage]   = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+const handleSubmit = async () => {
+  if (!name || !email || !message) return
+  setLoading(true)
+  try {
+    const response = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, phone, subject, message }),
+    })
+    if (response.ok) {
+      setSubmitted(true)
+    } else {
+      alert('Failed to send message. Please try again.')
+    }
+  } catch (error) {
+    alert('Something went wrong. Please try again.')
+  } finally {
+    setLoading(false)
+  }
+}
 
   return (
     <main className="min-h-screen bg-[#0d0d0d] text-white">
@@ -170,7 +192,7 @@ export default function ContactPage() {
                 </div>
 
                 <button
-                  onClick={() => setSubmitted(true)}
+                  onClick={handleSubmit}
                   disabled={!name || !email || !message}
                   className="w-full bg-[#1db97a] text-white py-4 rounded-2xl font-bold hover:bg-[#149558] transition disabled:opacity-40 disabled:cursor-not-allowed"
                 >
